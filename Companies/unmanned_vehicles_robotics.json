@@ -1,0 +1,88 @@
+[
+    {
+        "Exhibitor": "Advanced Security Technologies LLC",
+        "Summary": null,
+        "Booth": "1207",
+        "Prefixes": []
+    },
+    {
+        "Exhibitor": "Boston Dynamics",
+        "Summary": null, "Booth": "249",
+        "Prefixes": ["10:36:4A", "70:B3:D5:29:2"]
+    },
+    {
+        "Exhibitor": "Bounce Imaging",
+        "Summary": "Bounce Imaging makes a suite of tactical, 360-degree camera systems that keep first responders, warfighters, and civilians safer during hostage, high-risk warrant, and active shooter situations, as we...",
+        "Booth": "756",
+        "Prefixes": []
+    },
+    {
+        "Exhibitor": "D-Fend Solutions",
+        "Summary": "D-Fend Solutions is the leading field-proven, radio frequency (RF) cyber-based, non-kinetic, non-jamming, counter-drone takeover technology provider, enabling full control, safety and continuity durin...",
+        "Booth": "1291",
+        "Prefixes": []
+    },
+    {
+        "Exhibitor": "Darley", "Summary": null, "Booth": "2819",
+        "Prefixes": []
+    },
+    {
+        "Exhibitor": "Echodyne",
+        "Summary": "Echodyne is a U.S. designer and manufacturer of advanced radar solutions for critical infrastructure protection applications. The company’s proprietary metamaterials electronically scanned array (MESA...",
+        "Booth": "1973",
+        "Prefixes": ["34:4C:C8"]
+    },
+    {
+        "Exhibitor": "Elovate", "Summary": null, "Booth": "4414",
+        "Prefixes": ["34:4C:C8"]
+    },
+    {
+        "Exhibitor": "Fotokite",
+        "Summary": "Fotokite delivers elevated situational awareness to firefighters, law enforcement, and other emergency response teams with our easy-to-use, actively tethered drones. Built for simplicity and reliabil...",
+        "Booth": "2114",
+        "Prefixes": []
+    },
+    {
+        "Exhibitor": "Icarus Aerospace Inc.",
+        "Summary": "Icarus Aerospace, one of the only ANSI National Accreditation Board (ANAB) & the International Association of Directors of Law Enforcement Standards and Training (IADLEST) accredited Public Safety UAS...",
+        "Booth": "916",
+        "Prefixes": []
+    },
+    {
+        "Exhibitor": "ICOR Technology",
+        "Summary": "ICOR Technology is a manufacturer of high-quality, innovative, and cost-effective robots, tools and equipment for EOD and SWAT communities worldwide with over a decade of engineering and manufacturing...",
+        "Booth": "603",
+        "Prefixes":[]
+    },
+    {
+        "Exhibitor": "MatrixSpace",
+        "Summary": "MatrixSpace is re-imagining radar. We are addressing the next generation of AI-enabled sensing so that objects can be identified, and data collected in real-time - no cloud access required. We’re buil...",
+        "Booth": "2118",
+        "Prefixes":["8C:1F:64:80:6"]
+    },
+    {
+        "Exhibitor": "Mistral Inc.", "Summary": null, "Booth": "3011",
+        "Prefixes": ["00:50:C2:7E:8", "00:50:C2:D9:D", "70:B3:D5:50:0"]
+    },
+    {
+        "Exhibitor": "Paladin Drones",
+        "Summary": "LTE-Enabled UAVs Empowering Public Safety Paladin's Drone as a First Responder (DFR) technology provides first responders with a live overhead view before they arrive on the scene. Our mission is t...",
+        "Booth": "1841"
+    },
+    { "Exhibitor": "ReconRobotics, Inc", "Summary": null, "Booth": "3013" },
+    {
+        "Exhibitor": "Skydio",
+        "Summary": "Skydio is the leading U.S. drone manufacturer and world leader in autonomous flight. Skydio leverages breakthrough AI to create the world’s most intelligent flying machines for use by enterprises and ...",
+        "Booth": "1901"
+    },
+    {
+        "Exhibitor": "SkyfireAI",
+        "Summary": "Skyfire is the leading public safety-specific sUAS company in the country. We offer organizations drone equipment, flight training, and FAA consulting. We help you acquire your blanket and jurisdictio...",
+        "Booth": "1517"
+    },
+    {
+        "Exhibitor": "Zephyr Drone Simulator",
+        "Summary": "Zephyr is a scalable state-of-the-art simulation and training software suite for drone industry professionals, instructors and hobbyists alike. The full-featured platform trains pilots to operate safe...",
+        "Booth": "2303"
+    }
+]
