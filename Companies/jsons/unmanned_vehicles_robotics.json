@@ -1,13 +1,13 @@
-[
+{"unmanned_vehicle_robotics": [
     {
         "Exhibitor": "Advanced Security Technologies LLC",
-        "Summary": null,
+        "Summary": "None",
         "Booth": "1207",
         "Prefixes": []
     },
     {
         "Exhibitor": "Boston Dynamics",
-        "Summary": null, "Booth": "249",
+        "Summary": "None", "Booth": "249",
         "Prefixes": ["10:36:4A", "70:B3:D5:29:2"]
     },
     {
@@ -23,7 +23,7 @@
         "Prefixes": []
     },
     {
-        "Exhibitor": "Darley", "Summary": null, "Booth": "2819",
+        "Exhibitor": "Darley", "Summary": "None", "Booth": "2819",
         "Prefixes": []
     },
     {
@@ -33,7 +33,7 @@
         "Prefixes": ["34:4C:C8"]
     },
     {
-        "Exhibitor": "Elovate", "Summary": null, "Booth": "4414",
+        "Exhibitor": "Elovate", "Summary": "None", "Booth": "4414",
         "Prefixes": ["34:4C:C8"]
     },
     {
@@ -61,7 +61,7 @@
         "Prefixes":["8C:1F:64:80:6"]
     },
     {
-        "Exhibitor": "Mistral Inc.", "Summary": null, "Booth": "3011",
+        "Exhibitor": "Mistral Inc.", "Summary": "None", "Booth": "3011",
         "Prefixes": ["00:50:C2:7E:8", "00:50:C2:D9:D", "70:B3:D5:50:0"]
     },
     {
@@ -69,7 +69,7 @@
         "Summary": "LTE-Enabled UAVs Empowering Public Safety Paladin's Drone as a First Responder (DFR) technology provides first responders with a live overhead view before they arrive on the scene. Our mission is t...",
         "Booth": "1841"
     },
-    { "Exhibitor": "ReconRobotics, Inc", "Summary": null, "Booth": "3013" },
+    { "Exhibitor": "ReconRobotics, Inc", "Summary": "None", "Booth": "3013" },
     {
         "Exhibitor": "Skydio",
         "Summary": "Skydio is the leading U.S. drone manufacturer and world leader in autonomous flight. Skydio leverages breakthrough AI to create the world’s most intelligent flying machines for use by enterprises and ...",
@@ -85,4 +85,4 @@
         "Summary": "Zephyr is a scalable state-of-the-art simulation and training software suite for drone industry professionals, instructors and hobbyists alike. The full-featured platform trains pilots to operate safe...",
         "Booth": "2303"
     }
-]
+]}
