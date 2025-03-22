@@ -117,6 +117,7 @@ Booth = "1587"
 Exhibitor = "Flock Safety"
 Summary = "Flock Safety has built the first public safety operating system that helps neighborhoods, businesses, and law enforcement in 4000+ cities work together to eliminate crime, protect privacy, and mitigat..."
 Booth = "1623"
+Prefixes = ["B4:1E:52"]
 
 [["investigation surveillance detection"]]
 Exhibitor = "Gridless"

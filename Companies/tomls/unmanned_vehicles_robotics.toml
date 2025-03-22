@@ -81,21 +81,25 @@ Prefixes = [
 Exhibitor = "Paladin Drones"
 Summary = "LTE-Enabled UAVs Empowering Public Safety Paladin's Drone as a First Responder (DFR) technology provides first responders with a live overhead view before they arrive on the scene. Our mission is t..."
 Booth = "1841"
+Prefixes = []
 
 [[unmanned_vehicle_robotics]]
 Exhibitor = "ReconRobotics, Inc"
 Summary = "None"
 Booth = "3013"
+Prefixes = []
 
 [[unmanned_vehicle_robotics]]
 Exhibitor = "Skydio"
 Summary = "Skydio is the leading U.S. drone manufacturer and world leader in autonomous flight. Skydio leverages breakthrough AI to create the world’s most intelligent flying machines for use by enterprises and ..."
 Booth = "1901"
+Prefixes = ["38:1D:14"]
 
 [[unmanned_vehicle_robotics]]
 Exhibitor = "SkyfireAI"
 Summary = "Skyfire is the leading public safety-specific sUAS company in the country. We offer organizations drone equipment, flight training, and FAA consulting. We help you acquire your blanket and jurisdictio..."
 Booth = "1517"
+Prefixes = []
 
 [[unmanned_vehicle_robotics]]
 Exhibitor = "Zephyr Drone Simulator"
