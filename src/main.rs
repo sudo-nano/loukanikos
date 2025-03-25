@@ -8,7 +8,7 @@ use std::{
     io::{self, BufReader},
 };
 use toml::toml;
-use pcap::Device;
+use pcap::{Device, Capture};
 
 fn main() {
     let devices = Device::list().expect("Could not get capture devices.");
@@ -31,9 +31,28 @@ fn main() {
         if !name_valid {
             panic!("Not a valid capture interface.");
         }
+    } else {
+        let interface_name = interface.name.as_str();
+        println!("No interface specified. Capturing on default interface {}", interface_name);
     }
 
     dbg!(&interface);
+
+    capture_pcap(interface);
+}
+
+fn capture_pcap(interface: Device) {
+    let mut capture = Capture::from_device(interface).unwrap()
+        .promisc(true)
+        .rfmon(true)
+        .open().unwrap();
+    while let Ok(packet) = capture.next_packet() {
+        println!("Received packet! {:?}", packet);
+    }
+}
+
+fn capture_tcpdump(interface: Device) {
+    // TODO: Write this
 }
 
 fn json2toml () {
