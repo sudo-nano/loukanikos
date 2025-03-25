@@ -8,8 +8,31 @@ use std::{
     io::{self, BufReader},
 };
 use toml::toml;
+use pcap::Device;
 
 fn main() {
+    let devices = Device::list().expect("Could not get capture devices.");
+
+    // Use default device unless an argument is specified
+    let mut interface = Device::lookup().unwrap().expect("Unable to fetch default capture device");
+
+    // If an interface is specified, make sure it's in the list of valid devices
+    let arg2 = env::args().nth(2);
+    if arg2 != None {
+        let interface_name = arg2.unwrap();
+        for device in &devices {
+            if device.name == interface_name {
+                interface = device.clone();
+                break;
+            }
+        }
+        panic!("Not a valid capture interface.");
+    }
+
+    dbg!(&devices);
+}
+
+fn json2toml () {
     let dir_path = "Companies/";
     let dir = fs::read_dir(dir_path).expect("Could not find directory");
     let mut i = 0;
