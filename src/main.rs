@@ -6,6 +6,7 @@ use std::{
     fs::{self, File},
     io::prelude::*,
     io::{self, BufReader},
+    process::Command,
 };
 use toml::toml;
 use pcap::{Device, Capture};
@@ -52,7 +53,16 @@ fn capture_pcap(interface: Device) {
 }
 
 fn capture_tcpdump(interface: Device) {
-    // TODO: Write this
+    // TODO: Write function to build BPF filter from TOML files
+
+    // TODO: Pass TCPdump the filter file
+    let output = Command::new("sudo")
+        .arg("tcpdump")
+        .arg("-i")
+        .arg(interface.name)
+        .arg("-e")
+        .spawn()
+        .expect("Failed to start tcpdump");
 }
 
 fn json2toml () {
