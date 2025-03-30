@@ -54,7 +54,9 @@ fn main() {
     }
 
     dbg!(&interface);
-    let prefix_db = Vec::new();
+
+    let prefix_db: Vec<Company> = Vec::new();
+    import_toml(&prefix_db);
 
     capture_pcap(interface, prefix_db);
 }
@@ -63,7 +65,7 @@ fn capture_pcap(interface: Device, db: Vec<Company>) {
     let mut capture = Capture::from_device(interface).unwrap()
         .promisc(true)
         .rfmon(true)
-        .open().unwrap();
+        .open().expect("Unable to open socket");
     while let Ok(packet) = capture.next_packet() {
         println!("Received packet! {:?}", packet);
     }
@@ -105,14 +107,20 @@ fn json2toml () {
 
 // Load toml files into internal data
 // TODO: After creating internal struct for the data, add a vector of them as the parameter for this function
-fn import_toml (db: Vec<Company>) {
-    let dir_path = "Companies/toml/";
+fn import_toml (db: &Vec<Company>) {
+    let dir_path = "Companies/tomls/";
     let dir = fs::read_dir(dir_path).expect("Could not find directory");
     for path in dir {
         let path_unwrapped = path.expect("Invalid file path");
         dbg!(path_unwrapped.path().display());
 
-        let contents = fs::read_to_string(path_unwrapped.path());
+        let contents = fs::read_to_string(path_unwrapped.path())
+            .expect("Could not open file");
+        dbg!(&contents);
+
+        let table = toml::Value::try_from(contents).expect("Could not convert TOML to table");
+        dbg!(table);
+        // TODO: Deserialize table
     }
 }
 
