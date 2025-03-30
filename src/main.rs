@@ -1,4 +1,4 @@
-use serde;
+use serde::{Serialize, Deserialize};
 use serde_json::json;
 use std::collections::BTreeMap;
 use std::{
@@ -10,6 +10,22 @@ use std::{
 };
 use toml::toml;
 use pcap::{Device, Capture};
+use macaddr::{MacAddr6, MacAddr8};
+use u4::U4;
+
+enum MacPrefix {
+    Small([U4; 9]),  // 4.5 byte prefix
+    Medium([U4; 7]), // 3.5 byte prefix
+    Large([U4; 6])  // 3 byte prefix
+}
+
+#[derive(Serialize, Deserialize)]
+struct Company {
+    #[serde(rename = "Exhibitor")]
+    name: String,
+    #[serde(rename = "Prefixes")]
+    prefixes: Vec<String>,
+}
 
 fn main() {
     let devices = Device::list().expect("Could not get capture devices.");
@@ -38,11 +54,12 @@ fn main() {
     }
 
     dbg!(&interface);
+    let prefix_db = Vec::new();
 
-    capture_pcap(interface);
+    capture_pcap(interface, prefix_db);
 }
 
-fn capture_pcap(interface: Device) {
+fn capture_pcap(interface: Device, db: Vec<Company>) {
     let mut capture = Capture::from_device(interface).unwrap()
         .promisc(true)
         .rfmon(true)
@@ -52,7 +69,7 @@ fn capture_pcap(interface: Device) {
     }
 }
 
-fn capture_tcpdump(interface: Device) {
+fn capture_tcpdump(interface: Device, db: Vec<Company>) {
     // TODO: Write function to build BPF filter from TOML files
 
     // TODO: Pass TCPdump the filter file
@@ -69,10 +86,10 @@ fn json2toml () {
     let dir_path = "Companies/";
     let dir = fs::read_dir(dir_path).expect("Could not find directory");
     let mut i = 0;
-    for f in dir {
-        let f_unwrapped = f.expect("Invalid file path");
-        print!("{}", f_unwrapped.path().display());
-        let file = fs::File::open(f_unwrapped.path()).expect("Could not open file");
+    for path in dir {
+        let path_unwrapped = path.expect("Invalid file path");
+        print!("{}", path_unwrapped.path().display());
+        let file = fs::File::open(path_unwrapped.path()).expect("Could not open file");
         let buf_reader = BufReader::new(file);
         let data =
             serde_json::from_reader::<BufReader<File>, Vec<BTreeMap<String, String>>>(buf_reader)
@@ -84,4 +101,23 @@ fn json2toml () {
         let _ = new_file.write_all(new_file_bytes);
         i += 1;
     }
+}
+
+// Load toml files into internal data
+// TODO: After creating internal struct for the data, add a vector of them as the parameter for this function
+fn import_toml (db: Vec<Company>) {
+    let dir_path = "Companies/toml/";
+    let dir = fs::read_dir(dir_path).expect("Could not find directory");
+    for path in dir {
+        let path_unwrapped = path.expect("Invalid file path");
+        dbg!(path_unwrapped.path().display());
+
+        let contents = fs::read_to_string(path_unwrapped.path());
+    }
+}
+
+// Create tcpdump filter from already imported files
+// TODO: After creating internal struct for the data, add a vector of them as the parameter for this function
+fn create_tcpdump_filter (db: Vec<Company>) {
+
 }
