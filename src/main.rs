@@ -8,7 +8,7 @@ use std::{
     io::{self, BufReader},
     process::Command,
 };
-use toml::toml;
+use toml::{toml, Table};
 use pcap::{Device, Capture};
 use macaddr::{MacAddr6, MacAddr8};
 use u4::U4;
@@ -17,6 +17,12 @@ enum MacPrefix {
     Small([U4; 9]),  // 4.5 byte prefix
     Medium([U4; 7]), // 3.5 byte prefix
     Large([U4; 6])  // 3 byte prefix
+}
+
+#[derive(Deserialize)]
+struct Category {
+    name: String,
+    companies: Vec<Company>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -56,9 +62,9 @@ fn main() {
     dbg!(&interface);
 
     let prefix_db: Vec<Company> = Vec::new();
-    import_toml(&prefix_db);
+    import_toml(prefix_db);
 
-    capture_pcap(interface, prefix_db);
+    //capture_pcap(interface, prefix_db);
 }
 
 fn capture_pcap(interface: Device, db: Vec<Company>) {
@@ -107,7 +113,7 @@ fn json2toml () {
 
 // Load toml files into internal data
 // TODO: After creating internal struct for the data, add a vector of them as the parameter for this function
-fn import_toml (db: &Vec<Company>) {
+fn import_toml (mut db: Vec<Company>) {
     let dir_path = "Companies/tomls/";
     let dir = fs::read_dir(dir_path).expect("Could not find directory");
     for path in dir {
@@ -116,11 +122,16 @@ fn import_toml (db: &Vec<Company>) {
 
         let contents = fs::read_to_string(path_unwrapped.path())
             .expect("Could not open file");
-        dbg!(&contents);
+        //dbg!(&contents);
 
-        let table = toml::Value::try_from(contents).expect("Could not convert TOML to table");
-        dbg!(table);
+        let map: toml::Table = toml::from_str(&contents).expect("Could not convert TOML to table");
+        dbg!(&map);
         // TODO: Deserialize table
+        //let table = toml::Value::Table::try_from::<String>(contents);
+        //dbg!(&table);
+        let mut keys = map.keys();
+        let table = map.get(keys.next().expect("No keys in map"));
+        dbg!(&table);
     }
 }
 
