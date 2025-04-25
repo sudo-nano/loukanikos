@@ -1,5 +1,6 @@
 use serde::{Serialize, Deserialize};
 use serde_json::json;
+use toml::value::Array;
 use std::collections::BTreeMap;
 use std::{
     env,
@@ -8,7 +9,7 @@ use std::{
     io::{self, BufReader},
     process::Command,
 };
-use toml::{toml, Table};
+use toml::{toml, Table, map::Map, Value};
 use pcap::{Device, Capture};
 use macaddr::{MacAddr6, MacAddr8};
 use u4::U4;
@@ -23,6 +24,15 @@ enum MacPrefix {
 struct Category {
     name: String,
     companies: Vec<Company>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct ExhibitorData {
+    #[serde(rename = "Exhibitor")]
+    name: String,
+    summary: String,
+    booth: u16,
+    prefixes: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -124,14 +134,20 @@ fn import_toml (mut db: Vec<Company>) {
             .expect("Could not open file");
         //dbg!(&contents);
 
-        let map: toml::Table = toml::from_str(&contents).expect("Could not convert TOML to table");
+        let map = contents.parse::<Table>().unwrap();
         dbg!(&map);
-        // TODO: Deserialize table
-        //let table = toml::Value::Table::try_from::<String>(contents);
-        //dbg!(&table);
+
         let mut keys = map.keys();
         let table = map.get(keys.next().expect("No keys in map"));
-        dbg!(&table);
+        //dbg!(&table);
+
+        let array = table.unwrap().as_array().expect("Failed to extract array.");
+        dbg!("Printing whatever the heck this is");
+        //dbg!(&array);
+        for item in array {
+            dbg!(item);
+            // TODO: Figure out how to get item into ExhibitorData
+        }
     }
 }
 
