@@ -13,6 +13,7 @@ use toml::{toml, Table, map::Map, Value};
 use pcap::{Device, Capture};
 use macaddr::{MacAddr6, MacAddr8};
 use u4::U4;
+use std::collections::HashMap;
 
 enum MacPrefix {
     Small([U4; 9]),  // 4.5 byte prefix
@@ -35,12 +36,12 @@ struct ExhibitorData {
     prefixes: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct Company {
     #[serde(rename = "Exhibitor")]
     name: String,
     #[serde(rename = "Prefixes")]
-    prefixes: Vec<String>,
+    prefixes: Option<Vec<String>>,
 }
 
 fn main() {
@@ -72,7 +73,8 @@ fn main() {
     dbg!(&interface);
 
     let prefix_db: Vec<Company> = Vec::new();
-    import_toml(prefix_db);
+    let path = "./Companies/tomls/unmanned_vehicles_robotics.toml";
+    import_toml(path, prefix_db);
 
     //capture_pcap(interface, prefix_db);
 }
@@ -121,34 +123,26 @@ fn json2toml () {
     }
 }
 
-// Load toml files into internal data
-// TODO: After creating internal struct for the data, add a vector of them as the parameter for this function
-fn import_toml (mut db: Vec<Company>) {
-    let dir_path = "Companies/tomls/";
-    let dir = fs::read_dir(dir_path).expect("Could not find directory");
-    for path in dir {
-        let path_unwrapped = path.expect("Invalid file path");
-        dbg!(path_unwrapped.path().display());
+// Load single toml file into internal data
+// I don't understand exactly why this has to be the return type that it is
+fn import_toml (path: &str, mut db: Vec<Company>) -> Result<(), Box<dyn std::error::Error>>{
+    // Validate path
+    let file = fs::read_to_string(path);
+    if let Ok(toml_file) = file {
+        let slice = toml_file.as_str();
+        let categories: HashMap<String, Vec<Company>> = toml::from_str(slice)?;
 
-        let contents = fs::read_to_string(path_unwrapped.path())
-            .expect("Could not open file");
-        //dbg!(&contents);
-
-        let map = contents.parse::<Table>().unwrap();
-        dbg!(&map);
-
-        let mut keys = map.keys();
-        let table = map.get(keys.next().expect("No keys in map"));
-        //dbg!(&table);
-
-        let array = table.unwrap().as_array().expect("Failed to extract array.");
-        dbg!("Printing whatever the heck this is");
-        //dbg!(&array);
-        for item in array {
-            dbg!(item);
-            // TODO: Figure out how to get item into ExhibitorData
+        for (category, companies) in categories.iter() {
+            println!("category: {}", category);
+            for company in companies {
+                if let Some(_prefixes) = &company.prefixes {
+                    dbg!(company);
+                    db.push(company.clone());
+                }
+            }
         }
     }
+    Ok(())
 }
 
 // Create tcpdump filter from already imported files
