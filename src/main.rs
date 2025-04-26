@@ -1,7 +1,9 @@
-use serde::{Serialize, Deserialize};
+use macaddr::{MacAddr6, MacAddr8};
+use pcap::{Capture, Device};
+use serde::{Deserialize, Serialize};
 use serde_json::json;
-use toml::value::Array;
 use std::collections::BTreeMap;
+use std::collections::HashMap;
 use std::{
     env,
     fs::{self, File},
@@ -9,16 +11,14 @@ use std::{
     io::{self, BufReader},
     process::Command,
 };
-use toml::{toml, Table, map::Map, Value};
-use pcap::{Device, Capture};
-use macaddr::{MacAddr6, MacAddr8};
+use toml::value::Array;
+use toml::{map::Map, toml, Table, Value};
 use u4::U4;
-use std::collections::HashMap;
 
 enum MacPrefix {
     Small([U4; 9]),  // 4.5 byte prefix
     Medium([U4; 7]), // 3.5 byte prefix
-    Large([U4; 6])  // 3 byte prefix
+    Large([U4; 6]),  // 3 byte prefix
 }
 
 #[derive(Deserialize)]
@@ -26,7 +26,6 @@ struct Category {
     name: String,
     companies: Vec<Company>,
 }
-
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Company {
@@ -40,11 +39,13 @@ fn main() {
     let devices = Device::list().expect("Could not get capture devices.");
 
     // Use default device unless an argument is specified
-    let mut interface = Device::lookup().unwrap().expect("Unable to fetch default capture device");
+    let mut interface = Device::lookup()
+        .unwrap()
+        .expect("Unable to fetch default capture device");
 
     // If an interface is specified, make sure it's in the list of valid devices
     let arg2 = env::args().nth(1);
-    if arg2 != None {
+    if arg2.is_some() {
         let interface_name = arg2.unwrap();
         let mut name_valid = false;
         for device in &devices {
@@ -59,7 +60,10 @@ fn main() {
         }
     } else {
         let interface_name = interface.name.as_str();
-        println!("No interface specified. Capturing on default interface {}", interface_name);
+        println!(
+            "No interface specified. Capturing on default interface {}",
+            interface_name
+        );
     }
 
     dbg!(&interface);
@@ -67,17 +71,19 @@ fn main() {
     let prefix_db: Vec<Company> = Vec::new();
     // TODO: change this to the tomls directory and then iterate through the files in it
     let path = "./Companies/tomls/unmanned_vehicles_robotics.toml";
-    import_toml(path, prefix_db);
+    let _ = import_toml(path, prefix_db);
 
     // TODO: Prompt user for whether to use direct pcap capture or tcpdump capture
     //capture_pcap(interface, prefix_db);
 }
 
 fn capture_pcap(interface: Device, db: Vec<Company>) {
-    let mut capture = Capture::from_device(interface).unwrap()
+    let mut capture = Capture::from_device(interface)
+        .unwrap()
         .promisc(true)
         .rfmon(true)
-        .open().expect("Unable to open socket");
+        .open()
+        .expect("Unable to open socket");
     while let Ok(packet) = capture.next_packet() {
         println!("Received packet! {:?}", packet);
     }
@@ -96,11 +102,10 @@ fn capture_tcpdump(interface: Device, db: Vec<Company>) {
         .expect("Failed to start tcpdump");
 }
 
-fn json2toml () {
+fn json2toml() {
     let dir_path = "Companies/";
     let dir = fs::read_dir(dir_path).expect("Could not find directory");
-    let mut i = 0;
-    for path in dir {
+    for (i, path) in dir.enumerate() {
         let path_unwrapped = path.expect("Invalid file path");
         print!("{}", path_unwrapped.path().display());
         let file = fs::File::open(path_unwrapped.path()).expect("Could not open file");
@@ -113,13 +118,12 @@ fn json2toml () {
         let new_file_bytes = new_file_str.as_bytes();
         let mut new_file = File::create(i.to_string() + ".toml").expect("Could not create file");
         let _ = new_file.write_all(new_file_bytes);
-        i += 1;
     }
 }
 
 // Load single toml file into internal data
 // I don't understand exactly why this has to be the return type that it is
-fn import_toml (path: &str, mut db: Vec<Company>) -> Result<(), Box<dyn std::error::Error>>{
+fn import_toml(path: &str, mut db: Vec<Company>) -> Result<(), Box<dyn std::error::Error>> {
     // Validate path
     let file = fs::read_to_string(path);
     if let Ok(toml_file) = file {
@@ -129,7 +133,7 @@ fn import_toml (path: &str, mut db: Vec<Company>) -> Result<(), Box<dyn std::err
         for (category, companies) in categories.iter() {
             println!("category: {}", category);
             for company in companies {
-                if let Some(_prefixes) = &company.prefixes {
+                if company.prefixes.is_some() {
                     dbg!(company);
                     db.push(company.clone());
                 }
@@ -140,7 +144,7 @@ fn import_toml (path: &str, mut db: Vec<Company>) -> Result<(), Box<dyn std::err
 }
 
 // Create tcpdump filter from already imported files
-fn create_tcpdump_filter (db: Vec<Company>) {
+fn create_tcpdump_filter(db: Vec<Company>) {
     for company in db {
         // TODO: Use BufWriter to write prefixes to filter file
     }
