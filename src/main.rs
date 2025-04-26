@@ -120,13 +120,12 @@ fn json2toml() {
 
 // Load single toml file into internal data
 // I don't understand exactly why this has to be the return type that it is
-fn import_toml(path: &str, mut db: Vec<Company>) -> Result<(), Box<dyn std::error::Error>> {
+fn import_toml(path: &str, mut db: Vec<Company>) -> Result<(), toml::de::Error> {
     // Validate path
     let file = fs::read_to_string(path);
     if let Ok(toml_file) = file {
         let slice = toml_file.as_str();
         let categories: HashMap<String, Vec<Company>> = toml::from_str(slice)?;
-
         for (category, companies) in categories.iter() {
             println!("category: {}", category);
             for company in companies {
