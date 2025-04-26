@@ -65,16 +65,16 @@ fn main() {
 
     dbg!(&interface);
 
-    let prefix_db: Vec<Company> = Vec::new();
+    let mut prefix_db: Vec<Company> = Vec::new();
     // TODO: change this to the tomls directory and then iterate through the files in it
     let path = "./Companies/tomls/unmanned_vehicles_robotics.toml";
-    let _ = import_toml(path, prefix_db);
+    let _ = import_toml(path, &mut prefix_db);
 
     // TODO: Prompt user for whether to use direct pcap capture or tcpdump capture
     //capture_pcap(interface, prefix_db);
 }
 
-fn capture_pcap(interface: Device, db: Vec<Company>) {
+fn capture_pcap(interface: Device, db: &[Company]) {
     let mut capture = Capture::from_device(interface)
         .unwrap()
         .promisc(true)
@@ -86,7 +86,7 @@ fn capture_pcap(interface: Device, db: Vec<Company>) {
     }
 }
 
-fn capture_tcpdump(interface: Device, db: Vec<Company>) {
+fn capture_tcpdump(interface: Device, db: &[Company]) {
     // TODO: Write function to build BPF filter from TOML files
 
     // TODO: Pass TCPdump the filter file
@@ -96,7 +96,9 @@ fn capture_tcpdump(interface: Device, db: Vec<Company>) {
         .arg(interface.name)
         .arg("-e")
         .spawn()
-        .expect("Failed to start tcpdump");
+        .expect("Failed to start tcpdump")
+        .wait()
+        .expect("Child process failed");
 }
 
 fn json2toml() {
@@ -120,17 +122,15 @@ fn json2toml() {
 
 // Load single toml file into internal data
 // I don't understand exactly why this has to be the return type that it is
-fn import_toml(path: &str, mut db: Vec<Company>) -> Result<(), toml::de::Error> {
+fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error> {
     // Validate path
     let file = fs::read_to_string(path);
     if let Ok(toml_file) = file {
         let slice = toml_file.as_str();
         let categories: HashMap<String, Vec<Company>> = toml::from_str(slice)?;
         for (category, companies) in categories.iter() {
-            println!("category: {}", category);
             for company in companies {
                 if company.prefixes.is_some() {
-                    dbg!(company);
                     db.push(company.clone());
                 }
             }
@@ -140,7 +140,7 @@ fn import_toml(path: &str, mut db: Vec<Company>) -> Result<(), toml::de::Error> 
 }
 
 // Create tcpdump filter from already imported files
-fn create_tcpdump_filter(db: Vec<Company>) {
+fn create_tcpdump_filter(db: &[Company]) {
     for company in db {
         // TODO: Use BufWriter to write prefixes to filter file
     }
