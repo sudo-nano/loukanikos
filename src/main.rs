@@ -1,20 +1,17 @@
 use macaddr::{MacAddr6, MacAddr8};
 use pcap::{Capture, Device};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
-use std::collections::BTreeMap;
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::{
     env,
     fs::{self, File},
     io::prelude::*,
-    io::{self, BufReader},
+    io::BufReader,
     process::Command,
 };
-use toml::value::Array;
-use toml::{map::Map, toml, Table, Value};
 use u4::U4;
 
+// TODO: Are these incorrectly labeled?
 enum MacPrefix {
     Small([U4; 9]),  // 4.5 byte prefix
     Medium([U4; 7]), // 3.5 byte prefix
