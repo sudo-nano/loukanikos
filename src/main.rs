@@ -27,14 +27,6 @@ struct Category {
     companies: Vec<Company>,
 }
 
-#[derive(Serialize, Deserialize)]
-struct ExhibitorData {
-    #[serde(rename = "Exhibitor")]
-    name: String,
-    summary: String,
-    booth: u16,
-    prefixes: Vec<String>,
-}
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Company {
@@ -73,9 +65,11 @@ fn main() {
     dbg!(&interface);
 
     let prefix_db: Vec<Company> = Vec::new();
+    // TODO: change this to the tomls directory and then iterate through the files in it
     let path = "./Companies/tomls/unmanned_vehicles_robotics.toml";
     import_toml(path, prefix_db);
 
+    // TODO: Prompt user for whether to use direct pcap capture or tcpdump capture
     //capture_pcap(interface, prefix_db);
 }
 
@@ -146,7 +140,8 @@ fn import_toml (path: &str, mut db: Vec<Company>) -> Result<(), Box<dyn std::err
 }
 
 // Create tcpdump filter from already imported files
-// TODO: After creating internal struct for the data, add a vector of them as the parameter for this function
 fn create_tcpdump_filter (db: Vec<Company>) {
-
+    for company in db {
+        // TODO: Use BufWriter to write prefixes to filter file
+    }
 }
