@@ -49,38 +49,6 @@ struct Company {
     prefixes: Option<Vec<String>>,
 }
 
-#[derive(Debug)]
-struct Database {
-    data: BTreeMap<String, Option<Vec<MacPrefix>>>,
-}
-
-impl Database {
-    fn new(db: Vec<Company>) -> Self {
-        Self {
-            data: {
-                let mut data = BTreeMap::new();
-                for company in db.iter() {
-                    data.insert(company.name, None);
-                    if company.prefixes.is_none() {
-                        continue;
-                    } else if company.prefixes.unwrap().is_empty() {
-                        continue;
-                    }
-                    let mut key = data.get_mut(&company.name).unwrap();
-                    let mut prefixes = Vec::new();
-                    for prefix in key.iter() {
-                        if prefix.len() == 8 {
-                            prefixes.push()
-                        }
-                    }
-                    *key = Some(prefixes);
-                }
-                data
-            },
-        }
-    }
-}
-
 fn main() {
     let devices = Device::list().expect("Could not get capture devices.");
 
@@ -200,6 +168,11 @@ fn create_tcpdump_filter(db: &[Company]) {
         let prefixes = company.prefixes.as_ref().unwrap();
         if prefixes.is_empty() {
             continue;
+        }
+        for prefix in prefixes.iter() {
+            let prefix_len = match prefix.len() {
+                8 => 3,
+            }
         }
         // TODO: Use BufWriter to write prefixes to filter file
     }
