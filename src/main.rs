@@ -121,7 +121,6 @@ fn json2toml() {
 }
 
 // Load single toml file into internal data
-// I don't understand exactly why this has to be the return type that it is
 fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error> {
     // Validate path
     let file = fs::read_to_string(path);
