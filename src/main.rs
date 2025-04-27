@@ -1,7 +1,9 @@
 use macaddr::{MacAddr6, MacAddr8};
 use pcap::{Capture, Device};
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
+use std::io::BufWriter;
 use std::{
     env,
     fs::{self, File},
@@ -10,10 +12,8 @@ use std::{
     process::Command,
 };
 use u4::U4;
-use regex::Regex;
 
-// These are correctly labeled. They're larger because there are more addresses
-// under that prefix.
+#[derive(Debug)]
 enum MacPrefix {
     Small([U4; 9]),  // 4.5 byte prefix
     Medium([U4; 7]), // 3.5 byte prefix
@@ -47,6 +47,38 @@ struct Company {
     name: String,
     #[serde(rename = "Prefixes")]
     prefixes: Option<Vec<String>>,
+}
+
+#[derive(Debug)]
+struct Database {
+    data: BTreeMap<String, Option<Vec<MacPrefix>>>,
+}
+
+impl Database {
+    fn new(db: Vec<Company>) -> Self {
+        Self {
+            data: {
+                let mut data = BTreeMap::new();
+                for company in db.iter() {
+                    data.insert(company.name, None);
+                    if company.prefixes.is_none() {
+                        continue;
+                    } else if company.prefixes.unwrap().is_empty() {
+                        continue;
+                    }
+                    let mut key = data.get_mut(&company.name).unwrap();
+                    let mut prefixes = Vec::new();
+                    for prefix in key.iter() {
+                        if prefix.len() == 8 {
+                            prefixes.push()
+                        }
+                    }
+                    *key = Some(prefixes);
+                }
+                data
+            },
+        }
+    }
 }
 
 fn main() {
@@ -145,7 +177,7 @@ fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error>
     if let Ok(toml_file) = file {
         let slice = toml_file.as_str();
         let categories: HashMap<String, Vec<Company>> = toml::from_str(slice)?;
-        for (category, companies) in categories.iter() {
+        for (_, companies) in categories.iter() {
             for company in companies {
                 if company.prefixes.is_some() {
                     db.push(company.clone());
@@ -158,7 +190,17 @@ fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error>
 
 // Create tcpdump filter from already imported files
 fn create_tcpdump_filter(db: &[Company]) {
-    for company in db {
+    let filter_file =
+        File::create("filterfile.txt").expect("Could not create filterfile.txt for TCPDump");
+    let buf_writer = BufWriter::new(filter_file);
+    for company in db.iter() {
+        if company.prefixes.is_none() {
+            continue;
+        }
+        let prefixes = company.prefixes.as_ref().unwrap();
+        if prefixes.is_empty() {
+            continue;
+        }
         // TODO: Use BufWriter to write prefixes to filter file
     }
 }
