@@ -11,7 +11,8 @@ use std::{
 };
 use u4::U4;
 
-// TODO: Are these incorrectly labeled?
+// These are correctly labeled. They're larger because there are more addresses
+// under that prefix.
 enum MacPrefix {
     Small([U4; 9]),  // 4.5 byte prefix
     Medium([U4; 7]), // 3.5 byte prefix
@@ -82,6 +83,7 @@ fn capture_pcap(interface: Device, db: &[Company]) {
         .open()
         .expect("Unable to open socket");
     while let Ok(packet) = capture.next_packet() {
+        // TODO: write function for filtering received pcap format packets
         println!("Received packet! {:?}", packet);
     }
 }
