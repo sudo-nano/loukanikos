@@ -10,6 +10,7 @@ use std::{
     process::Command,
 };
 use u4::U4;
+use regex::Regex;
 
 // These are correctly labeled. They're larger because there are more addresses
 // under that prefix.
@@ -17,6 +18,21 @@ enum MacPrefix {
     Small([U4; 9]),  // 4.5 byte prefix
     Medium([U4; 7]), // 3.5 byte prefix
     Large([U4; 6]),  // 3 byte prefix
+}
+
+impl MacPrefix {
+    fn from_str(string: &str) {
+        let small = Regex::new(r"([0-9a-f]{2}:){4}[0-9a-f]").unwrap();
+        let medium = Regex::new(r"([0-9a-f]{2}:){3}[0-9a-f]").unwrap();
+        let large = Regex::new(r"([0-9a-f]{2}:){3}").unwrap();
+
+        let match_small = small.find(&string);
+        let match_medium = medium.find(&string);
+        let match_large = large.find(&string);
+
+        // TODO: Check options returned by regex finds. Reject matches at nonzero
+        // offsets. In cases with multiple matches, keep largest match.
+    }
 }
 
 #[derive(Deserialize)]

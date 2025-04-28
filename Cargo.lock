@@ -116,6 +116,7 @@ dependencies = [
  "json",
  "macaddr",
  "pcap",
+ "regex",
  "serde",
  "serde_json",
  "toml",
