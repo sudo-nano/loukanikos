@@ -157,10 +157,10 @@ fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error>
 }
 
 // Create tcpdump filter from already imported files
-fn create_tcpdump_filter(db: &[Company]) {
+fn create_tcpdump_filter(db: &[Company]) -> Result<(), std::io::Error>{
     let filter_file =
         File::create("filterfile.txt").expect("Could not create filterfile.txt for TCPDump");
-    let buf_writer = BufWriter::new(filter_file);
+    let mut buf_writer = BufWriter::new(filter_file);
     for company in db.iter() {
         if company.prefixes.is_none() {
             continue;
@@ -170,10 +170,20 @@ fn create_tcpdump_filter(db: &[Company]) {
             continue;
         }
         for prefix in prefixes.iter() {
+            // Unfortunately BPF prefix matching sucks because of this
+            // https://stackoverflow.com/questions/55687405/why-does-bpf-allow-ether02-and-ether04-but-not-ether03
             let prefix_len = match prefix.len() {
-                8 => 3,
-            }
+                8 => 3,  // Probably need to change this so that BPF is happy
+                9 => 4,  // Actually 3.5 bytes
+                13 => 5, // Actually 4.5 bytes
+                _ => panic!("Invalid MAC prefix length")
+            };
+            // TODO: Verify that this actually matches 3.5 and 4.5 byte prefixes properly
+            let line = format!("ether [6:{}] == {} or", prefix_len, prefix);
+            buf_writer.write_all(line.as_bytes())?;
         }
-        // TODO: Use BufWriter to write prefixes to filter file
     }
+
+    buf_writer.flush()?;
+    Ok(())
 }
