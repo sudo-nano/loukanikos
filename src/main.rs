@@ -3,13 +3,13 @@ use pcap::{Capture, Device};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
-use std::io::BufWriter;
+use std::io::{BufWriter, ErrorKind};
 use std::{
     env,
     fs::{self, File},
     io::prelude::*,
     io::BufReader,
-    process::Command,
+    process::{Command, Stdio},
 };
 use u4::U4;
 
@@ -86,8 +86,14 @@ fn main() {
     // TODO: change this to the tomls directory and then iterate through the files in it
     let path = "./Companies/tomls/unmanned_vehicles_robotics.toml";
     let _ = import_toml(path, &mut prefix_db);
+    create_tcpdump_filter(&prefix_db).expect("Unable to create tcpdump filter");
 
     // TODO: Prompt user for whether to use direct pcap capture or tcpdump capture
+    let capture_result = capture_tcpdump(interface, &prefix_db);
+    match capture_result {
+        Ok(something) => something,
+        Err(e) => panic!("tcpdump capture failed"),
+    }
     //capture_pcap(interface, prefix_db);
 }
 
@@ -104,7 +110,8 @@ fn capture_pcap(interface: Device, db: &[Company]) {
     }
 }
 
-fn capture_tcpdump(interface: Device, db: &[Company]) {
+/// Initiate capture using tcpdump
+fn capture_tcpdump (interface: Device, db: &[Company]) -> Result<(), std::io::Error> {
     // TODO: Write function to build BPF filter from TOML files
 
     // TODO: Pass TCPdump the filter file
@@ -113,10 +120,22 @@ fn capture_tcpdump(interface: Device, db: &[Company]) {
         .arg("-i")
         .arg(interface.name)
         .arg("-e")
-        .spawn()
-        .expect("Failed to start tcpdump")
-        .wait()
-        .expect("Child process failed");
+        .stdout(Stdio::piped())
+        .spawn()?
+        .stdout
+        .ok_or_else(|| std::io::Error::new(ErrorKind::Other, "Could not capture standard output"))?;
+        //.expect("Failed to start tcpdump")
+        //.wait()
+        //.expect("Child process failed");
+
+    // Initialize regex for extracting MAC addresses
+    let mac_extractor = Regex::new("([0-9a-f]{2}:){5}[0-9a-f]{2}").unwrap();
+
+    // Initialize buffered reader for the output
+    let reader = BufReader::new(output);
+    let lines = reader.lines();
+
+    Ok(())
 }
 
 fn json2toml() {
@@ -170,7 +189,9 @@ fn create_tcpdump_filter(db: &[Company]) -> Result<(), std::io::Error>{
             continue;
         }
         for prefix in prefixes.iter() {
-            // Unfortunately BPF prefix matching sucks because of this
+            // Prefix matching using BPF requires two comparisons to match 3 byte
+            // prefixes because it doesn't have any assembly instructions for
+            // comparing 3 bytes (only 1, 2, 4)
             // https://stackoverflow.com/questions/55687405/why-does-bpf-allow-ether02-and-ether04-but-not-ether03
             let prefix_len = match prefix.len() {
                 8 => 3,  // Probably need to change this so that BPF is happy
@@ -179,7 +200,7 @@ fn create_tcpdump_filter(db: &[Company]) -> Result<(), std::io::Error>{
                 _ => panic!("Invalid MAC prefix length")
             };
             // TODO: Verify that this actually matches 3.5 and 4.5 byte prefixes properly
-            let line = format!("ether [6:{}] == {} or", prefix_len, prefix);
+            let line = format!("ether [6:{}] == {} or\n", prefix_len, prefix);
             buf_writer.write_all(line.as_bytes())?;
         }
     }
