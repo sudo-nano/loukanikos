@@ -129,11 +129,25 @@ fn capture_tcpdump (interface: Device, db: &[Company]) -> Result<(), std::io::Er
         //.expect("Child process failed");
 
     // Initialize regex for extracting MAC addresses
-    let mac_extractor = Regex::new("([0-9a-f]{2}:){5}[0-9a-f]{2}").unwrap();
+    let mac_extractor = Regex::new("(?:[0-9a-f]{2}:){5}[0-9a-f]{2}").unwrap();
 
     // Initialize buffered reader for the output
     let reader = BufReader::new(output);
-    let lines = reader.lines();
+
+    for line in reader.lines() {
+        dbg!(&line);
+        let line_unwrapped = line.unwrap();
+        let line_str = line_unwrapped.as_str();
+        let extracted_macs = mac_extractor.captures(line_str);
+
+        match extracted_macs {
+            Some(macs) => {
+                // If MACs are extracted, match against prefix database
+                dbg!(macs);
+            },
+            None => println!("No MACs found"),
+        }
+    }
 
     Ok(())
 }
