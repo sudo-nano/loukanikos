@@ -110,7 +110,7 @@ fn capture_pcap(interface: Device, db: &[Company]) {
 }
 
 /// Initiate capture using tcpdump
-fn capture_tcpdump (interface: Device, db: &[Company]) -> Result<(), std::io::Error> {
+fn capture_tcpdump (interface: Device, db: &Vec<Company>) -> Result<(), std::io::Error> {
     let output = Command::new("sudo")
         .arg("tcpdump")
         .arg("-i")
@@ -131,18 +131,37 @@ fn capture_tcpdump (interface: Device, db: &[Company]) -> Result<(), std::io::Er
         dbg!(&line);
         let line_unwrapped = line.unwrap();
         let line_str = line_unwrapped.as_str();
-        let extracted_macs = mac_extractor.captures(line_str);
+        let extracted_macs: Vec<&str> = mac_extractor.find_iter(line_str).map(|m| m.as_str()).collect();
+        dbg!(&extracted_macs);
 
-        match extracted_macs {
-            Some(macs) => {
-                // If MACs are extracted, match against prefix database
-                dbg!(macs);
-            },
-            None => println!("No MACs found"),
+        // TODO: Differentiate between matching the first of the extracted MAC
+        // (sender) and second of extracted MACs (recipient)
+        for mac in extracted_macs {
+            let company = check_prefix(&mac, db);
+            if company.is_some() {
+                // TODO: If a company has multiple prefixes, track which one it matches.
+                // Doing so may be useful for statistics.
+                println!("[ALERT] Address {} matches company {}", mac, company.unwrap().name);
+            }
         }
     }
 
     Ok(())
+}
+
+/// Check a MAC address against the prefix database
+fn check_prefix<'a>(mac: &str, db: &'a Vec<Company>) -> Option<&'a Company> {
+    for company in db {
+        if company.prefixes.is_some() {
+            for prefix in company.prefixes.as_ref().unwrap() {
+                let results = mac.find(prefix.as_str());
+                if results? == 0 {
+                    return Some(&company);
+                }
+            }
+        }
+    }
+    None
 }
 
 fn json2toml() {
