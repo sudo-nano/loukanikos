@@ -4,6 +4,7 @@ Detect defense contractor hardware via Bluetooth and WiFi monitoring. Named afte
 JSON files of companies obtained from https://hackthepolice.pages.gay. MAC addresses added manually to the data set by contributors.
 
 ## Milestones
-- [ ] Basic filtering using tcpdump
-- [ ] Improved filtering using `libpcap`
+- [ ] Basic capturing using tcpdump
+- [ ] Improved capture using `libpcap`
 - [ ] Builds for embedded systems (ESP32?)
+- [ ] Count for number of unique MACs spotted in the last X minutes
