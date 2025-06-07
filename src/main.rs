@@ -86,7 +86,6 @@ fn main() {
     // TODO: change this to the tomls directory and then iterate through the files in it
     let path = "./Companies/tomls/unmanned_vehicles_robotics.toml";
     let _ = import_toml(path, &mut prefix_db);
-    create_tcpdump_filter(&prefix_db).expect("Unable to create tcpdump filter");
 
     // TODO: Prompt user for whether to use direct pcap capture or tcpdump capture
     let capture_result = capture_tcpdump(interface, &prefix_db);
@@ -112,9 +111,6 @@ fn capture_pcap(interface: Device, db: &[Company]) {
 
 /// Initiate capture using tcpdump
 fn capture_tcpdump (interface: Device, db: &[Company]) -> Result<(), std::io::Error> {
-    // TODO: Write function to build BPF filter from TOML files
-
-    // TODO: Pass TCPdump the filter file
     let output = Command::new("sudo")
         .arg("tcpdump")
         .arg("-i")
@@ -124,9 +120,6 @@ fn capture_tcpdump (interface: Device, db: &[Company]) -> Result<(), std::io::Er
         .spawn()?
         .stdout
         .ok_or_else(|| std::io::Error::new(ErrorKind::Other, "Could not capture standard output"))?;
-        //.expect("Failed to start tcpdump")
-        //.wait()
-        //.expect("Child process failed");
 
     // Initialize regex for extracting MAC addresses
     let mac_extractor = Regex::new("(?:[0-9a-f]{2}:){5}[0-9a-f]{2}").unwrap();
@@ -186,39 +179,5 @@ fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error>
             }
         }
     }
-    Ok(())
-}
-
-// Create tcpdump filter from already imported files
-fn create_tcpdump_filter(db: &[Company]) -> Result<(), std::io::Error>{
-    let filter_file =
-        File::create("filterfile.txt").expect("Could not create filterfile.txt for TCPDump");
-    let mut buf_writer = BufWriter::new(filter_file);
-    for company in db.iter() {
-        if company.prefixes.is_none() {
-            continue;
-        }
-        let prefixes = company.prefixes.as_ref().unwrap();
-        if prefixes.is_empty() {
-            continue;
-        }
-        for prefix in prefixes.iter() {
-            // Prefix matching using BPF requires two comparisons to match 3 byte
-            // prefixes because it doesn't have any assembly instructions for
-            // comparing 3 bytes (only 1, 2, 4)
-            // https://stackoverflow.com/questions/55687405/why-does-bpf-allow-ether02-and-ether04-but-not-ether03
-            let prefix_len = match prefix.len() {
-                8 => 3,  // Probably need to change this so that BPF is happy
-                9 => 4,  // Actually 3.5 bytes
-                13 => 5, // Actually 4.5 bytes
-                _ => panic!("Invalid MAC prefix length")
-            };
-            // TODO: Verify that this actually matches 3.5 and 4.5 byte prefixes properly
-            let line = format!("ether [6:{}] == {} or\n", prefix_len, prefix);
-            buf_writer.write_all(line.as_bytes())?;
-        }
-    }
-
-    buf_writer.flush()?;
     Ok(())
 }
