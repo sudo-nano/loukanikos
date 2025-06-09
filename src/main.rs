@@ -12,6 +12,7 @@ use std::{
     process::{Command, Stdio},
 };
 use u4::U4;
+use std::path::Path;
 
 #[derive(Debug)]
 enum MacPrefix {
@@ -82,10 +83,12 @@ fn main() {
 
     dbg!(&interface);
 
+    // Initialize prefix database
     let mut prefix_db: Vec<Company> = Vec::new();
-    // TODO: change this to the tomls directory and then iterate through the files in it
-    let path = "./Companies/tomls/unmanned_vehicles_robotics.toml";
-    let _ = import_toml(path, &mut prefix_db);
+
+    // Import toml directory
+    let dir = "./Companies/tomls/";
+    let _ = import_toml_dir(dir, &mut prefix_db);
 
     // TODO: Prompt user for whether to use direct pcap capture or tcpdump capture
     let capture_result = capture_tcpdump(interface, &prefix_db);
@@ -194,6 +197,25 @@ fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error>
             for company in companies {
                 if company.prefixes.is_some() {
                     db.push(company.clone());
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+fn import_toml_dir(dir_str: &str, db: &mut Vec<Company>) -> Result<(), std::io::Error> {
+    let dir = Path::new(dir_str);
+    if dir.is_dir() {
+        for entry in fs::read_dir(dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if !path.is_dir() {
+                // TODO: Implement proper error handling here. This is improper
+                // error handling because I wanted to get this working before a protest.
+                let import_result = import_toml(path.to_str().unwrap(), db);
+                if import_result.is_err() {
+                    panic!("Failed to import toml file");
                 }
             }
         }
