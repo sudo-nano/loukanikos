@@ -148,11 +148,9 @@ fn capture_tcpdump (interface: Device, db: &Vec<Company>) -> Result<(), std::io:
     let reader = BufReader::new(output);
 
     for line in reader.lines() {
-        //dbg!(&line);
         let line_unwrapped = line.unwrap();
         let line_str = line_unwrapped.as_str();
         let extracted_macs: Vec<&str> = mac_extractor.find_iter(line_str).map(|m| m.as_str()).collect();
-        //dbg!(&extracted_macs);
 
         // TODO: Differentiate between matching the first of the extracted MAC
         // (sender) and second of extracted MACs (recipient)
@@ -178,11 +176,7 @@ fn check_prefix<'a>(mac: &str, db: &'a Vec<Company>) -> Option<&'a Company> {
                 let results = &mac_lower.find(prefix);
                 if results.is_some() {
                     if results.unwrap() == 0 {
-                        println!("[DEBUG] MAC address {} matches company {}", mac, &company.name);
                         return Some(&company);
-                    }
-                    else {
-                        println!("[DEBUG] Non zero index MAC match at position {}", results.unwrap())
                     }
                 }
             }
@@ -226,8 +220,6 @@ fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error>
                     for i in 0..clone_prefixes.len() {
                         clone_prefixes[i] = clone_prefixes[i].to_ascii_lowercase();
                     }
-                    println!("[DEBUG] Lowercased prefixes:");
-                    dbg!(&clone_prefixes);
                     clone.prefixes = Some(clone_prefixes);
                     db.push(clone);
                 }
