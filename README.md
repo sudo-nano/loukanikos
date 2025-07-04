@@ -14,7 +14,7 @@ out the dataset yet. If you want to add a new company, or add MAC prefixes to an
 existing company, please put in a pull request.
 
 ## Milestones
-- [ ] Basic WiFi capturing using tcpdump
+- [X] Basic WiFi capturing using tcpdump
 - [ ] Improved capture using `libpcap`
 - [ ] Utilization of multiple wireless interfaces
 - [ ] Builds for embedded systems (ESP32?)
