@@ -51,6 +51,10 @@ struct Company {
 }
 
 fn main() {
+    println!("");
+    println!("loukanikos TEST BUILD: does MAC matching work?");
+    println!();
+
     let devices = Device::list().expect("Could not get capture devices.");
 
     // Use default device unless an argument is specified
@@ -89,6 +93,19 @@ fn main() {
     // Import toml directory
     let dir = "./Companies/tomls/";
     let _ = import_toml_dir(dir, &mut prefix_db);
+
+    // DEBUG: Test database matching
+    let test_result_0 = check_prefix("00:25:DF:ab:cd:ef", &prefix_db);
+    if test_result_0.is_none() {
+        println!("[DEBUG] Test match of 00:25:DF failed. Exiting.");
+        panic!();
+    }
+
+    let test_result_1 = check_prefix("00:25:df:ab:cd:ef", &prefix_db);
+    if test_result_1.is_none() {
+        println!("[DEBUG] Test match of 00:25:df (lowercase) failed. Exiting.");
+        panic!();
+    }
 
     // TODO: Prompt user for whether to use direct pcap capture or tcpdump capture
     let capture_result = capture_tcpdump(interface, &prefix_db);
@@ -131,11 +148,11 @@ fn capture_tcpdump (interface: Device, db: &Vec<Company>) -> Result<(), std::io:
     let reader = BufReader::new(output);
 
     for line in reader.lines() {
-        dbg!(&line);
+        //dbg!(&line);
         let line_unwrapped = line.unwrap();
         let line_str = line_unwrapped.as_str();
         let extracted_macs: Vec<&str> = mac_extractor.find_iter(line_str).map(|m| m.as_str()).collect();
-        dbg!(&extracted_macs);
+        //dbg!(&extracted_macs);
 
         // TODO: Differentiate between matching the first of the extracted MAC
         // (sender) and second of extracted MACs (recipient)
@@ -154,16 +171,24 @@ fn capture_tcpdump (interface: Device, db: &Vec<Company>) -> Result<(), std::io:
 
 /// Check a MAC address against the prefix database
 fn check_prefix<'a>(mac: &str, db: &'a Vec<Company>) -> Option<&'a Company> {
+    let mac_lower = &mac.to_lowercase();
     for company in db {
         if company.prefixes.is_some() {
             for prefix in company.prefixes.as_ref().unwrap() {
-                let results = mac.find(prefix.as_str());
-                if results? == 0 {
-                    return Some(&company);
+                let results = &mac_lower.find(prefix);
+                if results.is_some() {
+                    if results.unwrap() == 0 {
+                        println!("[DEBUG] MAC address {} matches company {}", mac, &company.name);
+                        return Some(&company);
+                    }
+                    else {
+                        println!("[DEBUG] Non zero index MAC match at position {}", results.unwrap())
+                    }
                 }
             }
         }
     }
+    //println!("[DEBUG] MAC {} does not match any database entries.", mac);
     None
 }
 
@@ -196,7 +221,15 @@ fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error>
         for (_, companies) in categories.iter() {
             for company in companies {
                 if company.prefixes.is_some() {
-                    db.push(company.clone());
+                    let mut clone = company.clone();
+                    let mut clone_prefixes = clone.prefixes.unwrap();
+                    for i in 0..clone_prefixes.len() {
+                        clone_prefixes[i] = clone_prefixes[i].to_ascii_lowercase();
+                    }
+                    println!("[DEBUG] Lowercased prefixes:");
+                    dbg!(&clone_prefixes);
+                    clone.prefixes = Some(clone_prefixes);
+                    db.push(clone);
                 }
             }
         }
