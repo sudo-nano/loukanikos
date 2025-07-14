@@ -1,88 +1,142 @@
+# CAD is Computer Aided Dispatching. RMS is Record Management Software.
 [[cad_rms_software]]
 Exhibitor = "365Labs"
 Summary = "365Labs helps agencies tackle the challenges of the next 20 years. 365 is a one cloud platform supported by modern, purpose-built Apps that replace a dozen or more existing systems, significantly impr..."
 Booth = "4101"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Abel Police"
 Summary = "null"
 Booth = "387"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "CentralSquare Technologies"
 Summary = "CentralSquare is an industry leader in public safety and public administration software, serving over 8,000 organizations from the largest metropolitan city to counties and towns of every size across ..."
 Booth = "773"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "CODY Systems"
 Summary = "CODY Systems is a PA-based, woman-owned company that provides data-driven solutions to law enforcement and government agencies of all sizes and tiers. Solutions include the scalable, multi-tenant, ful..."
 Booth = "3409"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Computer Information Systems, Inc."
 Summary = "Since 1985, CIS has had a single business: Public Safety Computer Systems. All of our personnel, equipment, resources and energy are devoted to bringing the most advanced, reliable and best maintaine..."
 Booth = "702"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Critical Response Group. Inc."
 Summary = "Critical Response Group comprises a team of US Special Operation veterans, public safety professionals, technical experts, and business executives that use our collective experiences to improve the na..."
 Booth = "975"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Hexagon and Leica Geosystems"
 Summary = "Hexagon improves public safety and security through reliable data, systems and capabilities by helping police manage and share information, enhance crime and accident investigations, ensure officer sa..."
 Booth = "553"
+# There are no prefixes that show up under Hexagon, but there are a bunch that
+# show up under Leica. Unclear whether all of them are related, but for now
+# they're all listed here.
+# https://maclookup.app/search-mac-by-vendor/result?vendor=leica
+Prefixes = [
+    "40:D8:55:05:D",    # Leica Biosystems
+    "8C:87:3B",         # Leica Camera AG
+    "00:17:17",         # Leica Geosystems AG
+    "00:1C:5D",         # Leica Microsystems
+    "40:F5:2E",         # Leica Microsystems (Schweiz) AG
+    "70:B3:D5:D3:0"     # Leica Microsystems Ltd. Shanghai
+]
 
 [[cad_rms_software]]
 Exhibitor = "i3 Verticals"
 Summary = "i3 Verticals offering simplifies and streamlines workflows across all government departments. With decades of industry experience and deep domain expertise, i3 Verticals Public Sector connects entire ..."
 Booth = "693"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Karda Inc."
 Summary = "null"
 Booth = "2242"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Kaseware, Inc."
 Summary = "Kaseware helps organizations solve complex investigations quickly and efficiently, ensuring the safety of people and the protection of property. Our software allows you to collect, analyze, and connec..."
 Booth = "573"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "LexisNexis Coplogic Solutions"
 Summary = "While crash fatalities have reached crisis levels within the U.S., agencies are looking for traffic safety experts to help them get ahead of the problem. LexisNexis Coplogic Solutions is introducing ..."
 Booth = "1315, 1322"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Motorola Solutions"
 Summary = "Motorola Solutions provides mission-critical intelligence that gives law enforcement the power to access information, stream video and collaborate in real-time. By integrating voice communications, s..."
 Booth = "741"
+# Note that Motorola Solutions is different from Motorola Mobility LLC.
+# Motorola Mobility is the consumer equipment division that was spun off in 2011.
+# Motorola Solutions does all of the defense contracting work.
+# Prefixes owned by Motorola Mobility LLC are not included here.
+Prefixes = [
+    "00:04:7D",
+    "10:74:6F", # Motorola Solutions Malaysia Sdn. Bhd.
+]
 
 [[cad_rms_software]]
 Exhibitor = "National Public Safety Group"
 Summary = "null"
 Booth = "797"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "New in Blue"
 Summary = "null"
 Booth = "4310"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Niche Technology Inc."
 Summary = "At Niche, we focus on the information demands of frontline officers when seconds count. The responsive NicheRMS365 UI provides a consistent, intuitive user experience on phone, tablet, laptop and desk..."
 Booth = "1413"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Omnigo Software"
 Summary = "Omnigo Software, a leading provider of public safety, incident reporting, and security management software solutions, has long been the preferred choice for law enforcement, education, healthcare, gam..."
 Booth = "211"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Oracle America, Inc."
 Summary = "Oracle is on a mission, through technology, to make work life simpler, safer, and more productive for our policing and law enforcement first responders. We are developing technologies to make this pos..."
 Booth = "1023"
-
+# Oracle prefixes are currently disabled to prevent false positives.
+# It's unclear whether any of their MAC addresses are actually being used for
+# defense hardware, and they clearly *are* being used for consumer hardware.
+# Their MACs can be seen on consumer WiFi access points on WiGLE.
+#
+# TODO: Check all prefixes to see which ones appear on consumer hardware
+Prefixes = []
+# Prefixes = [
+#   "00:21:F6", # https://wigle.net/search?netid=00%3A21%3AF6
+#   "00:00:17", # Not checked
+#   "A8:69:8C", # Not checked
+#   "00:10:4F", # Not checked
+#   "00:21:28", # Not checked
+#   "00:A0:A4", # Not checked
+#   "00:13:97", # Not checked
+#   "00:0F:4B", # Not checked
+#   "2C:C2:60", # Not checked
+#   "00:14:4F", # Not checked
+#   "08:00:20"  # Not checked
+# ]
 [[cad_rms_software]]
 Exhibitor = "ProPhoenix Corporation"
 Summary = "Public Safety Software: Law & Fire CAD, Law & Fire Mobile, Law & Fire iOS & Android apps, Law RMS, Fire RMS, Corrections Management System, Internal Affairs software, Pawn Registry and trackin..."
