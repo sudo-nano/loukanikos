@@ -141,43 +141,60 @@ Prefixes = []
 Exhibitor = "ProPhoenix Corporation"
 Summary = "Public Safety Software: Law & Fire CAD, Law & Fire Mobile, Law & Fire iOS & Android apps, Law RMS, Fire RMS, Corrections Management System, Internal Affairs software, Pawn Registry and trackin..."
 Booth = "4109"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "PSTrax"
 Summary = "PSTrax is software solution for Checklists and Inventory Management that helps Police Departments automate critical operations checks for Vehicles, Stations, Equipment, Supplies and Controlled Substan..."
 Booth = "2107"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Samsung"
 Summary = "Samsung provides innovative mobile solutions extending public safety communications beyond the vehicle. We partner with agencies to deliver force-multiplying technology that deliver the information fi..."
 Booth = "1563"
+# Samsung has 100 prefixes, and most of them are probably for consumer devices, so I'm
+# not going to actually add their prefixes unless we can get proof that a specific
+# prefix is used by defense hardware.
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Tait Communications"
-Summary = "null"
+# Summary from original dump was null, this description is paraphrased from Wikipedia.
+# https://en.wikipedia.org/wiki/Tait_Communications
+Summary = "Tait is a New Zealand radio communications company that develops voice and radio technologies. Customers include the New Zealand Police, London Buses, Country Fire Authority, and Basin Electric Power Cooperative."
 Booth = "3330"
+# Prefix is listed under Tait Electronics.
+# Once filtering by category is implemented, this company should be placed in an
+# intermediate category because they also produce consumer products.
+Prefixes = ["00:0D:CA"]
 
 [[cad_rms_software]]
 Exhibitor = "TBL Systems, Inc."
 Summary = "TBL Systems, Inc. is the leading provider in Secure-Cloud Records Management/RMS, Mobile-Dispatch, Electronic Citation, Digital Evidence Management and Traffic Reporting. RMS by TBL Systems is affo..."
 Booth = "3523"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Tyler Technologies"
 Summary = "With 30 years of public sector experience, Tyler Technologies knows what first responders need. Streamlining processes, collecting data, and improving communications are only a few of the many benefit..."
 Booth = "823"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Vehicle Management Solutions"
 Summary = "Vehicle Management Solutions (VMS) is the nation’s largest provider of dispatch, vehicle storage, and traffic incident management. VMS combines high quality local services, a cutting-edge technology p..."
 Booth = "4219"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Versaterm"
 Summary = "Versaterm is a global public safety solutions company helping agencies transform their organizations by providing innovative solutions, expertise, and an unwavering dedication to customer service. For..."
 Booth = "1373"
+Prefixes = []
 
 [[cad_rms_software]]
 Exhibitor = "Zetron, Inc."
 Summary = "Zetron is a leading provider of communications technology and services that help save lives and enable critical operations. Zetron solutions are highly interoperable, configurable, and scalable, offer..."
 Booth = "435"
+Prefixes = ["00:0B:13"]
