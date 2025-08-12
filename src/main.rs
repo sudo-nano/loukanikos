@@ -52,8 +52,6 @@ struct Company {
 
 fn main() {
     println!("");
-    println!("loukanikos TEST BUILD: does MAC matching work?");
-    println!();
 
     let devices = Device::list().expect("Could not get capture devices.");
 
