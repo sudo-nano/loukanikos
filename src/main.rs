@@ -83,6 +83,16 @@ fn main() {
         );
     }
 
+    // Check for flag to use libpcap
+    // TODO: Use a real argument parsing library
+    let mut use_libpcap = false;
+    let arg3 = env::args().nth(2);
+    if arg3.is_some() {
+        if arg3.unwrap() == "--use-libpcap" {
+            use_libpcap = true;
+        }
+    }
+
     dbg!(&interface);
 
     // Initialize prefix database
@@ -105,16 +115,19 @@ fn main() {
         panic!();
     }
 
-    // TODO: Prompt user for whether to use direct pcap capture or tcpdump capture
-    let capture_result = capture_tcpdump(interface, &prefix_db);
-    match capture_result {
-        Ok(something) => something,
-        Err(e) => panic!("tcpdump capture failed"),
+    // Capture using either libpcap or tcpdump depending on flag
+    if use_libpcap {
+        capture_pcap(interface, &prefix_db);
+    } else {
+        let capture_result = capture_tcpdump(interface, &prefix_db);
+        match capture_result {
+            Ok(something) => something,
+            Err(e) => panic!("tcpdump capture failed"),
+        }
     }
-    //capture_pcap(interface, prefix_db);
 }
 
-fn capture_pcap(interface: Device, db: &[Company]) {
+fn capture_pcap(interface: Device, db: &Vec<Company>) {
     let mut capture = Capture::from_device(interface)
         .unwrap()
         .promisc(true)
