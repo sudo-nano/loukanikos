@@ -1,4 +1,6 @@
+#![feature(ascii_char)]
 use macaddr::{MacAddr6, MacAddr8};
+use etherparse::SlicedPacket;
 use pcap::{Capture, Device};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -13,6 +15,7 @@ use std::{
 };
 use u4::U4;
 use std::path::Path;
+
 
 #[derive(Debug)]
 enum MacPrefix {
@@ -117,8 +120,10 @@ fn main() {
 
     // Capture using either pcap or tcpdump depending on flag
     if use_pcap {
+        println!("Capturing with pcap.");
         capture_pcap(interface, &prefix_db);
     } else {
+        println!("Capturing with tcpdump.");
         let capture_result = capture_tcpdump(interface, &prefix_db);
         match capture_result {
             Ok(something) => something,
@@ -135,9 +140,16 @@ fn capture_pcap(interface: Device, db: &Vec<Company>) {
         .open()
         .expect("Unable to open socket");
     while let Ok(packet) = capture.next_packet() {
-        // TODO: write function for filtering received pcap format packets
+        // TODO: parse packets with either etherparse or pnet
         println!("Received packet!");
-        println!("Packet Header: {:?}", packet.header);
+        println!("Packet: {:?}", packet.as_ascii());
+        match SlicedPacket::from_ethernet(&packet) {
+            Err(value) => println!("Err {:?}", value),
+            Ok(value) => {
+                let source = value.link.unwrap();
+                println!("link: {:?}", value.link);
+            }
+        }
     }
 }
 
