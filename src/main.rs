@@ -83,13 +83,13 @@ fn main() {
         );
     }
 
-    // Check for flag to use libpcap
+    // Check for flag to use pcap
     // TODO: Use a real argument parsing library
-    let mut use_libpcap = false;
+    let mut use_pcap = false;
     let arg3 = env::args().nth(2);
     if arg3.is_some() {
-        if arg3.unwrap() == "--use-libpcap" {
-            use_libpcap = true;
+        if arg3.unwrap() == "--use-pcap" {
+            use_pcap = true;
         }
     }
 
@@ -115,8 +115,8 @@ fn main() {
         panic!();
     }
 
-    // Capture using either libpcap or tcpdump depending on flag
-    if use_libpcap {
+    // Capture using either pcap or tcpdump depending on flag
+    if use_pcap {
         capture_pcap(interface, &prefix_db);
     } else {
         let capture_result = capture_tcpdump(interface, &prefix_db);
@@ -136,7 +136,8 @@ fn capture_pcap(interface: Device, db: &Vec<Company>) {
         .expect("Unable to open socket");
     while let Ok(packet) = capture.next_packet() {
         // TODO: write function for filtering received pcap format packets
-        println!("Received packet! {:?}", packet);
+        println!("Received packet!");
+        println!("Packet Header: {:?}", packet.header);
     }
 }
 

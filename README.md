@@ -20,7 +20,7 @@ for the wiki. If you want a location added, please put in a pull request.
 
 ## Milestones
 - [X] Basic WiFi capturing using tcpdump
-- [ ] Improved capture using `libpcap`
+- [ ] Improved capture using `pcap`
 - [ ] Utilization of multiple wireless interfaces
 - [ ] Builds for embedded systems (ESP32?)
 - [ ] Count for number of unique MACs spotted in the last X minutes
