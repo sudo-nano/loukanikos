@@ -15,6 +15,7 @@ use std::{
 };
 use u4::U4;
 use std::path::Path;
+use hex_string::u8_to_hex_string;
 
 
 #[derive(Debug)]
@@ -132,6 +133,7 @@ fn main() {
     }
 }
 
+/// Initiate capture using the pcap library
 fn capture_pcap(interface: Device, db: &Vec<Company>) {
     let mut capture = Capture::from_device(interface)
         .unwrap()
@@ -142,15 +144,35 @@ fn capture_pcap(interface: Device, db: &Vec<Company>) {
     while let Ok(packet) = capture.next_packet() {
         // TODO: parse packets with either etherparse or pnet
         println!("Received packet!");
-        println!("Packet: {:?}", packet.as_ascii());
         match SlicedPacket::from_ethernet(&packet) {
             Err(value) => println!("Err {:?}", value),
             Ok(value) => {
-                let source = value.link.unwrap();
-                println!("link: {:?}", value.link);
+                // Unwrapping here produces a LinkSlice
+                let slice = value.link.unwrap();
+
+                // Unwrapping here produces an Ethernet2Header
+                let ether2header = slice.to_header()
+                    .unwrap()
+                    .ethernet2()
+                    .unwrap();
+                println!("source array: {:?}", ether2header.source);
+                let source_string = mac_u8_to_string(ether2header.source);
+                println!("source: {:?} )", source_string);
+                println!();
             }
         }
     }
+}
+
+// Convert an array of 6 u8s into a MAC address String with colon separated octets
+fn mac_u8_to_string(u8_array: [u8;6]) -> String{
+    let mut mac_str = String::new();
+    for octet in u8_array {
+        let octet_str = u8_to_hex_string(&octet);
+        mac_str.push(octet_str[0]);
+        mac_str.push(octet_str[1]);
+    }
+    return mac_str
 }
 
 /// Initiate capture using tcpdump
