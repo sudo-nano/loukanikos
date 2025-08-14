@@ -147,6 +147,9 @@ fn capture_pcap(interface: Device, db: &Vec<Company>) {
         match SlicedPacket::from_ethernet(&packet) {
             Err(value) => println!("Err {:?}", value),
             Ok(value) => {
+                // TODO: stuff all of this messy conversion into a function that takes
+                // a SlicedPacket in and outputs the source and destination MAC
+
                 // Unwrapping here produces a LinkSlice
                 let slice = value.link.unwrap();
 
@@ -157,8 +160,16 @@ fn capture_pcap(interface: Device, db: &Vec<Company>) {
                     .unwrap();
                 println!("source array: {:?}", ether2header.source);
                 let source_string = mac_u8_to_string(ether2header.source);
-                println!("source: {:?} )", source_string);
+                println!("source: {}", source_string);
                 println!();
+                let company = check_prefix(source_string.as_str(), db);
+                if company.is_some() {
+                    // TODO: If a company has multiple prefixes, track which one it matches.
+                    // Doing so may be useful for statistics.
+                    // TODO: Implement optional matching of destination address for extended
+                    // detection
+                    println!("[ALERT] Address {} matches company {}", source_string, company.unwrap().name);
+                }
             }
         }
     }
