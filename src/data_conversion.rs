@@ -1,6 +1,32 @@
 // Data cleaning and management functions for loukanikos
+use std::{
+    env,
+    fs::{self, File},
+    io::prelude::*,
+    io::BufReader,
+    process::{Command, Stdio},
+};
+use std::path::Path;
+use crate::Deserialize;
+use crate::Serialize;
+use std::collections::{HashMap, BTreeMap};
 
-fn json2toml() {
+#[derive(Deserialize)]
+pub struct Category {
+    pub name: String,
+    pub companies: Vec<Company>,
+}
+
+/// Struct for storing the name and prefixes of a company
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Company {
+    #[serde(rename = "Exhibitor")]
+    pub name: String,
+    #[serde(rename = "Prefixes")]
+    pub prefixes: Option<Vec<String>>,
+}
+
+pub fn json2toml() {
     let dir_path = "Companies/";
     let dir = fs::read_dir(dir_path).expect("Could not find directory");
     for (i, path) in dir.enumerate() {
@@ -20,7 +46,7 @@ fn json2toml() {
 }
 
 // Load single toml file into internal data
-fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error> {
+pub fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error> {
     // Validate path
     let file = fs::read_to_string(path);
     if let Ok(toml_file) = file {
@@ -43,7 +69,7 @@ fn import_toml(path: &str, db: &mut Vec<Company>) -> Result<(), toml::de::Error>
     Ok(())
 }
 
-fn import_toml_dir(dir_str: &str, db: &mut Vec<Company>) -> Result<(), std::io::Error> {
+pub fn import_toml_dir(dir_str: &str, db: &mut Vec<Company>) -> Result<(), std::io::Error> {
     let dir = Path::new(dir_str);
     if dir.is_dir() {
         for entry in fs::read_dir(dir)? {

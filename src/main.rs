@@ -1,23 +1,21 @@
-use macaddr::{MacAddr6, MacAddr8};
+
 use etherparse::SlicedPacket;
 use pcap::{Capture, Device};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::collections::{BTreeMap, HashMap};
-use std::io::{BufWriter, ErrorKind};
+use std::io::ErrorKind;
 use std::{
     env,
-    fs::{self, File},
     io::prelude::*,
     io::BufReader,
     process::{Command, Stdio},
 };
 use u4::U4;
-use std::path::Path;
+
 use hex_string::u8_to_hex_string;
 
-
 mod data_conversion;
+use data_conversion::Company;
 
 #[derive(Debug)]
 enum MacPrefix {
@@ -41,20 +39,7 @@ impl MacPrefix {
     }
 }
 
-#[derive(Deserialize)]
-struct Category {
-    name: String,
-    companies: Vec<Company>,
-}
 
-/// Struct for storing the name and prefixes of a company
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Company {
-    #[serde(rename = "Exhibitor")]
-    name: String,
-    #[serde(rename = "Prefixes")]
-    prefixes: Option<Vec<String>>,
-}
 
 fn main() {
     println!("");
@@ -106,7 +91,7 @@ fn main() {
 
     // Import toml directory
     let dir = "./Companies/tomls/";
-    let _ = import_toml_dir(dir, &mut prefix_db);
+    let _ = data_conversion::import_toml_dir(dir, &mut prefix_db);
 
     // DEBUG: Test database matching
     let test_result_0 = check_prefix("00:25:DF:ab:cd:ef", &prefix_db);
