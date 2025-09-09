@@ -16,6 +16,7 @@ use u4::U4;
 use std::path::Path;
 use hex_string::u8_to_hex_string;
 
+
 mod data_conversion;
 
 #[derive(Debug)]
@@ -46,6 +47,7 @@ struct Category {
     companies: Vec<Company>,
 }
 
+/// Struct for storing the name and prefixes of a company
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Company {
     #[serde(rename = "Exhibitor")]
