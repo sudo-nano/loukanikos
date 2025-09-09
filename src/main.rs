@@ -58,12 +58,10 @@ fn main() {
         .expect("Unable to fetch default capture device");
 
     // If an interface is specified, make sure it's in the list of valid devices
-    let arg2 = env::args().nth(1);
-    if arg2.is_some() {
-        let interface_name = arg2.unwrap();
+    if !args.interface.is_empty() {
         let mut name_valid = false;
         for device in &devices {
-            if device.name == interface_name {
+            if device.name == args.interface {
                 interface = device.clone();
                 name_valid = true;
                 break;
