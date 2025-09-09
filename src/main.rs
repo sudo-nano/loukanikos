@@ -1,4 +1,3 @@
-#![feature(ascii_char)]
 use macaddr::{MacAddr6, MacAddr8};
 use etherparse::SlicedPacket;
 use pcap::{Capture, Device};
