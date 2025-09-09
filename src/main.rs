@@ -11,8 +11,8 @@ use std::{
     process::{Command, Stdio},
 };
 use u4::U4;
-
 use hex_string::u8_to_hex_string;
+use clap::{Parser, Subcommand};
 
 mod data_conversion;
 use data_conversion::Company;
@@ -39,10 +39,16 @@ impl MacPrefix {
     }
 }
 
-
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    // WiFi capture interface to use
+    #[clap(short, long, default_value_t = String::new())]
+    interface: String,
+}
 
 fn main() {
-    println!("");
+    let args = Args::parse();
 
     let devices = Device::list().expect("Could not get capture devices.");
 
@@ -162,7 +168,7 @@ fn capture_pcap(interface: Device, db: &Vec<Company>) {
     }
 }
 
-// Convert an array of 6 u8s into a MAC address String with colon separated octets
+/// Convert an array of 6 u8s into a MAC address String with colon separated octets
 fn mac_u8_to_string(u8_array: [u8;6]) -> String{
     let mut mac_str = String::new();
     for octet in u8_array {
