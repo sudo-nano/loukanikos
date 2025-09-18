@@ -18,6 +18,7 @@ consisting of six hexadecimal bytes.[^1] People typically write them as colon se
 or dash separated.
 
 > aa:bb:cc:dd:ee:ff
+
 > aa-bb-cc-dd-ee-ff
 
 The beginning of an interface's MAC address is its manufacturer's Organizationally
