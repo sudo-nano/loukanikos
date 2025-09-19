@@ -84,16 +84,6 @@ fn main() {
         );
     }
 
-    // Check for flag to use pcap
-    // TODO: Use a real argument parsing library
-    let mut use_pcap = false;
-    let arg3 = env::args().nth(2);
-    if arg3.is_some() {
-        if arg3.unwrap() == "--use-pcap" {
-            use_pcap = true;
-        }
-    }
-
     dbg!(&interface);
 
     // Initialize prefix database
