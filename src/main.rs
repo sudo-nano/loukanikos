@@ -100,7 +100,7 @@ fn main() {
     } else {
         let interface_name = interface.name.as_str();
         println!(
-            "No interface specified. Capturing on default interface {}",
+            "[INFO] No interface specified. Capturing on default interface {}",
             interface_name
         );
     }
@@ -128,6 +128,10 @@ fn main() {
     // Capture using pcap unless user has specified tcpdump
     if args.use_tcpdump {
         println!("[INFO] Capturing with tcpdump on interface {}", interface.name);
+        if args.check_dest_addrs {
+            println!("[INFO] Destination address checking is enabled.");
+        }
+
         let capture_result = capture_tcpdump(interface, &prefix_db);
         match capture_result {
             Ok(something) => something,
@@ -135,6 +139,9 @@ fn main() {
         }
     } else {
         println!("[INFO] Capturing with pcap on interface {}", interface.name);
+        if args.check_dest_addrs {
+            println!("[INFO] Destination address checking is enabled.");
+        }
         capture_pcap(interface, &prefix_db, args.check_dest_addrs);
     }
 }
