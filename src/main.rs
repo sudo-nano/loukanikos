@@ -155,12 +155,13 @@ fn capture_pcap(interface: Device, db: &Vec<Company>) {
 
                 println!("source: {}", source);
                 println!();
+
+                // TODO: Implement optional matching of destination address for extended
+                // detection
                 let company = check_prefix(source.as_str(), db);
                 if company.is_some() {
                     // TODO: If a company has multiple prefixes, track which one it matches.
                     // Doing so may be useful for statistics.
-                    // TODO: Implement optional matching of destination address for extended
-                    // detection
                     println!("[ALERT] Address {} matches company {}", source, company.unwrap().name);
                 }
             }
@@ -168,6 +169,7 @@ fn capture_pcap(interface: Device, db: &Vec<Company>) {
     }
 }
 
+/// Extract source and destination address strings from a SlicedPacket
 fn extract_addresses(packet: SlicedPacket) -> (String, String) {
     // Unwrap packet to produce LinkSlice
     let slice = packet.link.unwrap();
