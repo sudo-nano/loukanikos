@@ -145,37 +145,43 @@ fn capture_pcap(interface: Device, db: &Vec<Company>) {
         .open()
         .expect("Unable to open socket");
     while let Ok(packet) = capture.next_packet() {
-        // TODO: parse packets with either etherparse or pnet
         println!("Received packet!");
         match SlicedPacket::from_ethernet(&packet) {
             Err(value) => println!("Err {:?}", value),
             Ok(value) => {
-                // TODO: stuff all of this messy conversion into a function that takes
-                // a SlicedPacket in and outputs the source and destination MAC
+                let addresses = extract_addresses(value);
+                let source = addresses.0;
+                let destination = addresses.1;
 
-                // Unwrapping here produces a LinkSlice
-                let slice = value.link.unwrap();
-
-                // Unwrapping here produces an Ethernet2Header
-                let ether2header = slice.to_header()
-                    .unwrap()
-                    .ethernet2()
-                    .unwrap();
-                println!("source array: {:?}", ether2header.source);
-                let source_string = mac_u8_to_string(ether2header.source);
-                println!("source: {}", source_string);
+                println!("source: {}", source);
                 println!();
-                let company = check_prefix(source_string.as_str(), db);
+                let company = check_prefix(source.as_str(), db);
                 if company.is_some() {
                     // TODO: If a company has multiple prefixes, track which one it matches.
                     // Doing so may be useful for statistics.
                     // TODO: Implement optional matching of destination address for extended
                     // detection
-                    println!("[ALERT] Address {} matches company {}", source_string, company.unwrap().name);
+                    println!("[ALERT] Address {} matches company {}", source, company.unwrap().name);
                 }
             }
         }
     }
+}
+
+fn extract_addresses(packet: SlicedPacket) -> (String, String) {
+    // Unwrap packet to produce LinkSlice
+    let slice = packet.link.unwrap();
+
+    // Unwrap LinkSlice to produce Ethernet2Header
+    let ether2header = slice.to_header()
+        .unwrap()
+        .ethernet2()
+        .unwrap();
+
+    let source_string = mac_u8_to_string(ether2header.source);
+    let dest_string = mac_u8_to_string(ether2header.destination);
+
+    return (source_string, dest_string);
 }
 
 /// Convert an array of 6 u8s into a MAC address String with colon separated octets
