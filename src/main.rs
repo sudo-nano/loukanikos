@@ -49,6 +49,11 @@ struct Args {
     #[clap(short, long, default_value_t = String::new(), hide_default_value = true)]
     interface: String,
 
+    /// Check packet destination MAC addresses for target prefixes to enable advanced
+    /// detection.
+    #[clap(long, default_value_t = false)]
+    check_dest_addrs: bool,
+
     /// Use tcpdump for capturing instead of pcap (not recommended)
     #[clap(long, default_value_t = false)]
     use_tcpdump: bool,
@@ -132,12 +137,12 @@ fn main() {
         }
     } else {
         println!("Capturing with pcap.");
-        capture_pcap(interface, &prefix_db);
+        capture_pcap(interface, &prefix_db, args.check_dest_addrs);
     }
 }
 
 /// Initiate capture using the pcap library
-fn capture_pcap(interface: Device, db: &Vec<Company>) {
+fn capture_pcap(interface: Device, db: &Vec<Company>, check_dest_addrs: bool) {
     let mut capture = Capture::from_device(interface)
         .unwrap()
         .promisc(true)
@@ -154,15 +159,26 @@ fn capture_pcap(interface: Device, db: &Vec<Company>) {
                 let destination = addresses.1;
 
                 println!("source: {}", source);
+                println!("destination: {}", destination);
                 println!();
 
                 // TODO: Implement optional matching of destination address for extended
                 // detection
-                let company = check_prefix(source.as_str(), db);
-                if company.is_some() {
+                let src_company = check_prefix(source.as_str(), db);
+                if src_company.is_some() {
                     // TODO: If a company has multiple prefixes, track which one it matches.
                     // Doing so may be useful for statistics.
-                    println!("[ALERT] Address {} matches company {}", source, company.unwrap().name);
+                    println!("[ALERT] Source address {} matches company {}",
+                        source, src_company.unwrap().name);
+                }
+
+                // If user has enabled destination address checking, check dest addr
+                if check_dest_addrs {
+                    let dest_company = check_prefix(destination.as_str(), db);
+                    if dest_company.is_some() {
+                        println!("[ALERT] Destination address {} matches company {}",
+                            destination, dest_company.unwrap().name);
+                    }
                 }
             }
         }
