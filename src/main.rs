@@ -16,6 +16,7 @@ use clap::{Parser, Subcommand};
 
 mod data_conversion;
 use data_conversion::Company;
+use chrono::{NaiveDateTime};
 
 #[derive(Debug)]
 enum MacPrefix {
@@ -51,6 +52,21 @@ struct Args {
     /// Use tcpdump for capturing instead of pcap (not recommended)
     #[clap(long, default_value_t = false)]
     use_tcpdump: bool,
+}
+
+/// Describes whether the SeenPrefix was a source address or destination address
+enum SeenType {
+    Source,
+    Destination
+}
+
+/// Records an event of a packet capture from one of the target MAC prefixes.
+struct DeviceSeenEvent {
+    address: String,
+    address_type: SeenType,
+    prefix: String,
+    company: Company, // Is storing this redundant?
+    last_seen: NaiveDateTime
 }
 
 fn main() {
