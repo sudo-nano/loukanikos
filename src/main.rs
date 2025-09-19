@@ -105,8 +105,6 @@ fn main() {
         );
     }
 
-    dbg!(&interface);
-
     // Initialize prefix database
     let mut prefix_db: Vec<Company> = Vec::new();
 
@@ -129,14 +127,14 @@ fn main() {
 
     // Capture using pcap unless user has specified tcpdump
     if args.use_tcpdump {
-        println!("Capturing with tcpdump.");
+        println!("[INFO] Capturing with tcpdump on interface {}", interface.name);
         let capture_result = capture_tcpdump(interface, &prefix_db);
         match capture_result {
             Ok(something) => something,
             Err(e) => panic!("tcpdump capture failed"),
         }
     } else {
-        println!("Capturing with pcap.");
+        println!("[INFO] Capturing with pcap on interface {}", interface.name);
         capture_pcap(interface, &prefix_db, args.check_dest_addrs);
     }
 }
