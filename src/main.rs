@@ -75,6 +75,9 @@ struct DeviceSeenEvent {
 }
 
 fn main() {
+    #[cfg(debug_assertions)]
+    println!("[INFO] This is a debug build.");
+
     let args = Args::parse();
 
     let devices = Device::list().expect("Could not get capture devices.");
@@ -155,7 +158,9 @@ fn capture_pcap(interface: Device, db: &Vec<Company>, check_dest_addrs: bool) {
         .open()
         .expect("Unable to open socket");
     while let Ok(packet) = capture.next_packet() {
-        println!("Received packet!");
+        #[cfg(debug_assertions)]
+        println!("[DEBUG] Received packet!");
+
         match SlicedPacket::from_ethernet(&packet) {
             Err(value) => println!("Err {:?}", value),
             Ok(value) => {
@@ -163,9 +168,11 @@ fn capture_pcap(interface: Device, db: &Vec<Company>, check_dest_addrs: bool) {
                 let source = addresses.0;
                 let destination = addresses.1;
 
-                println!("source: {}", source);
-                println!("destination: {}", destination);
-                println!();
+                if cfg!(debug_assertions) {
+                    println!("[DEBUG] source: {}", source);
+                    println!("[DEBUG] destination: {}", destination);
+                    println!();
+                }
 
                 // TODO: Implement optional matching of destination address for extended
                 // detection
