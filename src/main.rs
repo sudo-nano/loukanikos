@@ -5,14 +5,13 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::io::ErrorKind;
 use std::{
-    env,
     io::prelude::*,
     io::BufReader,
     process::{Command, Stdio},
 };
 use u4::U4;
 use hex_string::u8_to_hex_string;
-use clap::{Parser, Subcommand};
+use clap::{Parser};
 
 mod data_conversion;
 use data_conversion::Company;
