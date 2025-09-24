@@ -3,12 +3,13 @@ use etherparse::SlicedPacket;
 use pcap::{Capture, Device};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::io::ErrorKind;
-use std::{
-    io::prelude::*,
-    io::BufReader,
-    process::{Command, Stdio},
+use std::io::{
+    ErrorKind,
+    BufRead,
+    BufReader,
+    BufWriter
 };
+use std::process::{Command, Stdio};
 use u4::U4;
 use hex_string::u8_to_hex_string;
 use clap::{Parser};
@@ -56,6 +57,10 @@ struct Args {
     /// Use tcpdump for capturing instead of pcap (not recommended)
     #[clap(long, default_value_t = false)]
     use_tcpdump: bool,
+
+    /// File to save logs
+    #[clap(short, default_value_t = String::new())]
+    outfile: String,
 }
 
 /// Describes whether the SeenPrefix was a source address or destination address
