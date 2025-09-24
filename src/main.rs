@@ -120,16 +120,18 @@ fn main() {
     let _ = data_conversion::import_toml_dir(dir, &mut prefix_db);
 
     // DEBUG: Test database matching
-    let test_result_0 = check_prefix("00:25:DF:ab:cd:ef", &prefix_db);
-    if test_result_0.is_none() {
-        println!("[DEBUG] Test match of 00:25:DF failed. Exiting.");
-        panic!();
-    }
+    if cfg!(debug_assertions) {
+        let test_result_0 = check_prefix("00:25:DF:ab:cd:ef", &prefix_db);
+        if test_result_0.is_none() {
+            println!("[DEBUG] Test match of 00:25:DF failed. Exiting.");
+            panic!();
+        }
 
-    let test_result_1 = check_prefix("00:25:df:ab:cd:ef", &prefix_db);
-    if test_result_1.is_none() {
-        println!("[DEBUG] Test match of 00:25:df (lowercase) failed. Exiting.");
-        panic!();
+        let test_result_1 = check_prefix("00:25:df:ab:cd:ef", &prefix_db);
+        if test_result_1.is_none() {
+            println!("[DEBUG] Test match of 00:25:df (lowercase) failed. Exiting.");
+            panic!();
+        }
     }
 
     // Capture using pcap unless user has specified tcpdump
