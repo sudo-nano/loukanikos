@@ -329,6 +329,7 @@ dependencies = [
  "json",
  "macaddr",
  "pcap",
+ "prompt-input",
  "regex",
  "serde",
  "serde_json",
@@ -398,6 +399,12 @@ checksum = "02b3e5e68a3a1a02aad3ec490a98007cbc13c37cbe84a3cd7b8e406d76e7f778"
 dependencies = [
  "unicode-ident",
 ]
+
+[[package]]
+name = "prompt-input"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1e948af8e15540ebd77d7c7f37d6acbb17b9d61a28f363ff97360f25f2509c7e"
 
 [[package]]
 name = "quote"

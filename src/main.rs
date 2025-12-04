@@ -10,6 +10,7 @@ use std::io::{
     BufWriter
 };
 use std::process::{Command, Stdio};
+use std::fs;
 use u4::U4;
 use hex_string::u8_to_hex_string;
 use clap::{Parser};
@@ -17,6 +18,7 @@ use clap::{Parser};
 mod data_conversion;
 use data_conversion::Company;
 use chrono::{NaiveDateTime};
+use prompt_input::prelude::Promptable;
 
 #[derive(Debug)]
 enum MacPrefix {
@@ -286,4 +288,38 @@ fn check_prefix<'a>(mac: &str, db: &'a Vec<Company>) -> Option<&'a Company> {
     }
     //println!("[DEBUG] MAC {} does not match any database entries.", mac);
     None
+}
+
+/// Attempt to create or open an output file, and give the user the appropriate prompts.
+// TODO: add --clobber-outfile flag to allow users to always overwrite outfile.
+// TODO: add sanity checks to prevent outfile from being written to system directories,
+// since this program *does* have to be run with sudo for network interface perms.
+fn try_outfile(path: String) {
+    // Fetch file metadata
+    let metadata = fs::metadata(path);
+    let file;
+
+    // If file exists, prompt user for abort/overwrite/append
+    if metadata.is_ok() {
+        println!("Specified outfile already exists. Select an action:");
+        println!("0. Abort");
+        println!("1. Overwrite");
+        println!("2. Append");
+        let action_str = String::prompt("[0/1/2] ");
+        let mut options = fs::OpenOptions::new();
+
+        loop {
+            match action_str.as_str().trim_ascii() {
+                "0" => panic!("Aborting."),
+                "1" => options.write(true),
+                "2" => options.append(true),
+                _ => {},
+            }
+        }
+    }
+    // If file doesn't exist, create it.
+    else {
+
+    }
+        // If file creation fails, panic
 }
