@@ -25,3 +25,8 @@ for the wiki. If you want a location added, please put in a pull request.
 - [ ] Builds for embedded systems (ESP32?)
 - [ ] Count for number of unique MACs spotted in the last X minutes
 - [ ] Ability to enable and disable categories for detection
+
+## Related Works
+- [WiGLE](https://wigle.net) is the most popular wardriving website on the internet. They collect 802.11, bluetooth, and cell data.
+- [DEF CON 31 - Snoop On To Them, As They Snoop On To Us - Alan Meekins](https://youtu.be/cO1JSzAdPM8)
+    - rfparty, the app mentioned in this video, appears to no longer be on the google play store. However, [its GitHub still exists](https://github.com/datapartyjs/rfparty-xyz?tab=readme-ov-file#readme) if you want to build it yourself.
