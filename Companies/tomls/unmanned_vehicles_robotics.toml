@@ -102,6 +102,9 @@ Booth = "1517"
 Prefixes = []
 
 [[unmanned_vehicle_robotics]]
+# Zephyr is owned by Little Arms Studios, which is headquartered in Virginia.
+# https://cis.scc.virginia.gov/EntitySearch/BusinessInformation?businessId=680988&source=FromEntityResult&isSeries%20=%20false
 Exhibitor = "Zephyr Drone Simulator"
 Summary = "Zephyr is a scalable state-of-the-art simulation and training software suite for drone industry professionals, instructors and hobbyists alike. The full-featured platform trains pilots to operate safe..."
 Booth = "2303"
+Prefixes = []
