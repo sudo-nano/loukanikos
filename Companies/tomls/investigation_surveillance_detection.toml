@@ -333,3 +333,15 @@ Booth = "1676"
 Exhibitor = "Wireless CCTV LLC"
 Summary = "WCCTV is the USA’s leading supplier of mobile surveillance cameras for law enforcement applications, with over 150 agencies utilizing our cameras to augment their departments. Our-rapid deployment ..."
 Booth = "479"
+
+[["investigation surveillance detection"]]
+Exhibitor = "Blink by Amazon"
+Summary = "Amazon's in-house brand of consumer WiFi cameras."
+Prefixes = [
+    "3C:A0:70",
+    "70:AD:43",
+    "74:13:48",
+    "74:AB:93",
+    "C8:19:D8",
+    "F0:74:C1"
+]
